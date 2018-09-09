@@ -3,6 +3,10 @@ package io.github.tavisco.rvglbutler;
 import java.io.File;
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import io.github.tavisco.rvglbutler.utils.Configs;
 import io.github.tavisco.rvglbutler.utils.Constants;
 import io.github.tavisco.rvglbutler.view.HomeController;
 import javafx.application.Application;
@@ -19,27 +23,71 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		loadConfigs();
+		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("RVGL Butler");
 
-		loadConfigs();
+		
 		initRootLayout();
 		showHomeOverview();
 	}
 
 	private void loadConfigs() {
+		File confFile = new File("./butler.yaml");
 		
-		// Get the RVGL Path
-		DirectoryChooser directoryChooser = new DirectoryChooser();
-		File selectedDirectory = directoryChooser.showDialog(getPrimaryStage());
-
-		if (selectedDirectory != null) {
-			Constants consts = Constants.getInstance();
-			consts.setRvglPath(selectedDirectory.getAbsolutePath());
-			System.out.println("Setting RVGL path to: " + selectedDirectory.getAbsolutePath());
+		if (confFile.exists() && confFile.isFile()) {
+	        Configs configs = Configs.getInstance();
+	        if (!configs.isConfigsLoaded()) {
+				System.out.println("WOW! Error while loading configs!");
+			}
 		} else {
-			// No Directory selected
+			// No config file found!
+			
+			// Get the RVGL Path
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			File selectedDirectory = directoryChooser.showDialog(getPrimaryStage());
+
+			if (selectedDirectory != null) {
+				Configs configs = Configs.getInstance();
+				configs.setRvglPath(selectedDirectory.getAbsolutePath());
+				System.out.println("Setting RVGL path to: " + selectedDirectory.getAbsolutePath());
+				
+				// Get the RVGL executable
+				for (File rvglExecutableFile : selectedDirectory.listFiles()) {
+					for (String rvglExecutableName : Constants.RVGL_EXECUTABLES) {
+						if (rvglExecutableName.equals(rvglExecutableFile.getName())) {
+							configs.setRvglFound(true);
+							configs.setRvglExecutable(rvglExecutableName);
+						}
+					}
+				}
+				
+				if (configs.isRvglFound()) {
+					System.out.println("Setting RVGL executable to: " + configs.getRvglExecutable());
+					System.out.println("Saving configs...");
+					// Create an ObjectMapper mapper for YAML
+					ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+					// Write object as YAML file
+					try {
+						mapper.writeValue(confFile, configs);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					System.out.println("Configs saved to : " + confFile.getAbsolutePath());
+				}
+				
+				
+			} else {
+				// No Directory selected
+			}
 		}
+		
+		
+		
 	}
 
 	/**

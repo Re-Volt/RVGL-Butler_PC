@@ -3,8 +3,10 @@ package io.github.tavisco.rvglbutler.view.tabs;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import io.github.tavisco.rvglbutler.model.LevelItem;
+import io.github.tavisco.rvglbutler.utils.rvgl.FindLevels;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -55,20 +57,23 @@ public class LevelsTabController {
 		tileLevels.setHgap(15);
 		tileLevels.setVgap(15);
 
-		String levelPath = "/home/tavisco/.rvgl/levels";
-		String basePath = "/home/tavisco/.rvgl";
-		File levelFolder = new File(levelPath);
+		// String levelPath = "/home/tavisco/.rvgl/levels";
+		// String basePath = "/home/tavisco/.rvgl";
+		// File levelFolder = new File(levelPath);
 
-		for (File levelFile : levelFolder.listFiles()) {
+		/*for (File levelFile : levelFolder.listFiles()) {
 			LevelItem level = new LevelItem();
 			level.setName(levelFile.getName());
 			level.setItemPath(levelFile.getName());
 			level.setBasePath(basePath);
 
-			File lvlImage = new File(level.getImagePath());
+			File lvlImage = new File(level.getImagePath());*/
+		
+		List<LevelItem> allLevels = FindLevels.getAllLevels();
 
+		for (LevelItem level : allLevels) {
 			ImageView imgView;
-			imgView = createImageView(lvlImage);
+			imgView = createImageView(new File(level.getImagePath()));
 
 			if (imgView != null) {
 				final ContextMenu contextMenu = new ContextMenu();
@@ -100,6 +105,9 @@ public class LevelsTabController {
 				tileLevels.getChildren().addAll(pane);
 			}
 		}
+		
+			
+		//}
 	}
 
 	private ImageView createImageView(final File imageFile) {

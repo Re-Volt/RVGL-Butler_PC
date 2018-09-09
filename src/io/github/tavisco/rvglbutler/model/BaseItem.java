@@ -10,10 +10,8 @@ import io.github.tavisco.rvglbutler.model.enums.ItemType;
  */
 public abstract class BaseItem {
     protected String name;
-    //protected String imagePath;
     protected ItemType type;
-    protected  String basePath;
-    protected String itemPath;
+    protected String itemFolderName;
 
     public String getName() {
         return name;
@@ -33,24 +31,16 @@ public abstract class BaseItem {
         this.type = itemType;
     }
 
-    public String getBasePath() {
-        return basePath;
+    public String getItemFolderName() {
+        return itemFolderName;
     }
 
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
+    public void setItemFolderName(String itemPath) {
+        this.itemFolderName = itemPath;
     }
 
-    public String getItemPath() {
-        return itemPath;
-    }
-
-    public void setItemPath(String itemPath) {
-        this.itemPath = itemPath;
-    }
-
-    public String getFullPath() {
-        return basePath + File.separator + type.getTypePath() + File.separator + itemPath;
-    }
+    /*public String getFullPath() {
+        return basePath + File.separator + type.getTypePath() + File.separator + itemFolderName;
+    }*/
 
 }
