@@ -56,18 +56,6 @@ public class LevelsTabController {
 		tileLevels.setPadding(new Insets(15, 15, 15, 15));
 		tileLevels.setHgap(15);
 		tileLevels.setVgap(15);
-
-		// String levelPath = "/home/tavisco/.rvgl/levels";
-		// String basePath = "/home/tavisco/.rvgl";
-		// File levelFolder = new File(levelPath);
-
-		/*for (File levelFile : levelFolder.listFiles()) {
-			LevelItem level = new LevelItem();
-			level.setName(levelFile.getName());
-			level.setItemPath(levelFile.getName());
-			level.setBasePath(basePath);
-
-			File lvlImage = new File(level.getImagePath());*/
 		
 		List<LevelItem> allLevels = FindLevels.getAllLevels();
 
@@ -94,20 +82,15 @@ public class LevelsTabController {
 				imgView.setPreserveRatio(true);
 
 				Label lblLevelName = new Label(level.getName());
-				// lblLevelName.setPadding(new Insets(15, 0, 0, 0));
-				VBox pane = new VBox();
+				VBox vbox = new VBox();
 
-				pane.getChildren().add(imgView);
-				pane.getChildren().add(lblLevelName);
-				//pane.setPrefHeight(imgView.getFitHeight() + 90);
+				vbox.getChildren().add(imgView);
+				vbox.getChildren().add(lblLevelName);
 
-				pane.setAlignment(Pos.BOTTOM_CENTER);
-				tileLevels.getChildren().addAll(pane);
+				vbox.setAlignment(Pos.BOTTOM_CENTER);
+				tileLevels.getChildren().addAll(vbox);
 			}
 		}
-		
-			
-		//}
 	}
 
 	private ImageView createImageView(final File imageFile) {
