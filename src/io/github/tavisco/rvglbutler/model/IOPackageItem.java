@@ -32,13 +32,10 @@ public class IOPackageItem {
 	private final StringProperty name;
 	private StringProperty localVersion = new SimpleStringProperty("");
 	private StringProperty remoteVersion = new SimpleStringProperty("");
-	private boolean remoteVersionChecked = false;
 	private UpdateStatus updateStatus;
-
+	
 	private final String ERROR_STRING = "Error";
 
-
-	
 	public IOPackageItem(String name, ObservableList<IOPackageItem> ioPacks) {
 		this.name = new SimpleStringProperty(name);
 		determineRemoteVersion(ioPacks);
@@ -60,11 +57,8 @@ public class IOPackageItem {
 			try {
 				response = listenableFuture.get();
 				String remoteVersion = response.getResponseBody().substring(0, 7);
-				//System.out.println(getName() + " - V: " + remoteVersion);
 				setRemoteVersion(remoteVersion);
 				ioPacks.add(IOPackageItem.this);
-				//packList.refresh();
-				//packList.notify();
 			} catch (InterruptedException | ExecutionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -79,39 +73,6 @@ public class IOPackageItem {
 			}
 
 		}, Executors.newCachedThreadPool());
-		
-		/*ListenableFuture<Response> whenResponse = client.prepareGet(rvioRequest).execute();
-		try {
-			Response response = whenResponse.get();
-			String remoteVersion = response.getResponseBody().substring(0, 7);
-			System.out.println(getName() + " - V: " + remoteVersion);
-			setRemoteVersion(remoteVersion);
-			
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				client.close();
-				//finalize();
-			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
-		
-		/*String remoteVersion;
-		try {
-			remoteVersion = getHTML(rvioRequest).substring(0, 7);
-			//System.out.println(getName() + " - V: " + remoteVersion);
-			setRemoteVersion(remoteVersion);
-			
-			//System.out.println("Done!");
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 
 	private void determineLocalVersion() {
@@ -138,23 +99,17 @@ public class IOPackageItem {
 		return name.get();
 	}
 
-	public boolean isRemoteVersionChecked() {
-		return remoteVersionChecked;
-	}
-
 	public String getLocalVersion() {
-		if (localVersion.get().equals(ERROR_STRING)) {
-			return "---";
+		if (getUpdateStatus() == UpdateStatus.UPDATED && getUpdateStatus() == UpdateStatus.UPDATE_AVAIABLE) {
+			return localVersion.get();
+		} else {
+			return getUpdateStatus().getMessage();
 		}
-		return localVersion.get();
+		
 	}
 
 	public String getRemoteVersion() {
-		if (isRemoteVersionChecked()) {
-			return remoteVersion.get();
-		} else {
-			return "Checking...";
-		}
+		return remoteVersion.get();
 	}
 
 	public void setLocalVersion(String localVersion) {
@@ -163,20 +118,13 @@ public class IOPackageItem {
 
 	public void setRemoteVersion(String remoteVersion) {
 		this.remoteVersion.set(remoteVersion);
+		determinePackageUpdateStatus();
 	}
 
 	public String getDownloadLink() {
 		return Constants.RVIO_DOWNLOAD_PACKS_LINK.concat(getName()).concat(".zip");
 	}
 
-	public void setRemoteVersionChecked(boolean remoteVersionChecked) {
-		this.remoteVersionChecked = remoteVersionChecked;
-
-		if (remoteVersionChecked) {
-			determinePackageUpdateStatus();
-		}
-
-	}
 
 	private void determinePackageUpdateStatus() {
 		if (getLocalVersion().equals(ERROR_STRING)) {
