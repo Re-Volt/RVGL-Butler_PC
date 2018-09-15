@@ -48,20 +48,13 @@ public class RvIoTabController {
 		setContextMenu();
 	}
 	
-	private void setContextMenu() {
-		MenuItem miInstall = new MenuItem("Install/Update");
-		miInstall.setOnAction((ActionEvent event) -> {
-			IOPackageItem item = packageTable.getSelectionModel().getSelectedItem();
-		    System.out.println("Installing/Updating: " + item.getName());
-		    item.download();
-		});
-		
-		ContextMenu menu = new ContextMenu();
-		menu.getItems().add(miInstall);
-		packageTable.setContextMenu(menu);
-		
+	private void bindTableColumns() {
+		statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUpdateStatusProperty().get().getMessage()));
+		nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+		iOVersionColumn.setCellValueFactory(cellData -> cellData.getValue().getRemoteVersionProperty());
+		localVersionColumn.setCellValueFactory(cellData -> cellData.getValue().getLocalVersionProperty());
 	}
-
+	
 	private void loadRvIoPackages() {
 		Task<Boolean> getRemoteVersionTask = new Task<Boolean>() {
 			@Override
@@ -73,15 +66,7 @@ public class RvIoTabController {
 		
 		new Thread(getRemoteVersionTask).start();
 	}
-
-	private void bindTableColumns() {
-		statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUpdateStatus().getMessage()));
-		nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-		iOVersionColumn.setCellValueFactory(cellData -> cellData.getValue().getRemoteVersionProperty());
-		localVersionColumn.setCellValueFactory(cellData -> cellData.getValue().getLocalVersionProperty());
-		
-	}
-
+	
 	private void getAllRvIoPackages() {
 		DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(1500);
 		AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
@@ -96,7 +81,7 @@ public class RvIoTabController {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void fillRvIoPacksTable(String packs) {
 		if (!packs.isEmpty()) {
 			// Split on new lines
@@ -104,9 +89,30 @@ public class RvIoTabController {
 			System.out.println("Found " + rvioPackages.length + " packs on RV/IO");
 			for (String rvioPack : rvioPackages) {
 				new IOPackageItem(rvioPack, ioPacks);
-				//ioPacks.add(ioPack);
 			}
 		}
 	}
+	
+	private void setContextMenu() {
+		MenuItem miInstall = new MenuItem("Install/Update");
+		miInstall.setOnAction((ActionEvent event) -> {
+			IOPackageItem item = packageTable.getSelectionModel().getSelectedItem();
+		    System.out.println("Installing/Updating: " + item.getName());
+		    item.download();
+		});
+		
+		ContextMenu menu = new ContextMenu();
+		menu.getItems().add(miInstall);
+		packageTable.setContextMenu(menu);
+		
+	}
+
+	
+
+	
+
+	
+
+	
 
 }

@@ -1,27 +1,12 @@
 package main.io.github.tavisco.rvglbutler.model;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableView;
-import main.io.github.tavisco.rvglbutler.model.enums.UpdateStatus;
-import main.io.github.tavisco.rvglbutler.utils.Configs;
-import main.io.github.tavisco.rvglbutler.utils.Constants;
-import main.io.github.tavisco.rvglbutler.utils.ZipUtils;
-
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -34,23 +19,35 @@ import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.Response;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import main.io.github.tavisco.rvglbutler.model.enums.UpdateStatus;
+import main.io.github.tavisco.rvglbutler.utils.Configs;
+import main.io.github.tavisco.rvglbutler.utils.Constants;
+import main.io.github.tavisco.rvglbutler.utils.ZipUtils;
+
 public class IOPackageItem {
 	private final StringProperty name;
 	private StringProperty localVersion = new SimpleStringProperty("");
 	private StringProperty remoteVersion = new SimpleStringProperty("");
-	private UpdateStatus updateStatus = UpdateStatus.ERROR;
+	private ObjectProperty<UpdateStatus> updateStatus = new SimpleObjectProperty<UpdateStatus>(UpdateStatus.ERROR);
 
 	private final String ERROR_STRING = "- - -";
 
 	public IOPackageItem(String name, ObservableList<IOPackageItem> ioPacks) {
 		this.name = new SimpleStringProperty(name);
-		determineRemoteVersion(ioPacks);
 		determineLocalVersion();
+		determineRemoteVersion(ioPacks);
 	}
 
 	private void determineRemoteVersion(ObservableList<IOPackageItem> ioPacks) {
 		String rvioRequest = Constants.RVIO_ASSETS_LINK + getName() + ".txt";
-		// System.out.println(rvioRequest);
 
 		DefaultAsyncHttpClientConfig.Builder clientBuilder = Dsl.config().setConnectTimeout(1500);
 		AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
@@ -199,9 +196,7 @@ public class IOPackageItem {
 				}
 			}
 		};
-		new Thread(updatethread).
-
-				start();
+		new Thread(updatethread).start();
 	}
 
 	public String getName() {
@@ -209,12 +204,7 @@ public class IOPackageItem {
 	}
 
 	public String getLocalVersion() {
-		if (getUpdateStatus() == UpdateStatus.UPDATED && getUpdateStatus() == UpdateStatus.UPDATE_AVAIABLE) {
 			return localVersion.get();
-		} else {
-			return ERROR_STRING;
-		}
-
 	}
 
 	public String getRemoteVersion() {
@@ -236,19 +226,25 @@ public class IOPackageItem {
 
 	private void determinePackageUpdateStatus() {
 		if (getLocalVersion().equals(ERROR_STRING)) {
-			updateStatus = UpdateStatus.NOT_INSTALLED;
+			updateStatus.set(UpdateStatus.NOT_INSTALLED);
 			return;
 		}
 
 		if (getLocalVersion().equals(getRemoteVersion())) {
-			updateStatus = UpdateStatus.UPDATED;
+			updateStatus.set(UpdateStatus.UPDATED);
+			System.out.println("Installed: " + this.getName());
 		} else {
-			updateStatus = UpdateStatus.UPDATE_AVAIABLE;
+			updateStatus.set(UpdateStatus.UPDATE_AVAIABLE);
 		}
 	}
 
 	public UpdateStatus getUpdateStatus() {
-		return updateStatus;
+		return updateStatus.get();
+	}
+	
+	@SuppressWarnings("unused")
+	private void setUpdateStatus(UpdateStatus status) {
+		updateStatus.set(status);
 	}
 
 	public StringProperty getNameProperty() {
@@ -261,6 +257,10 @@ public class IOPackageItem {
 
 	public StringProperty getRemoteVersionProperty() {
 		return remoteVersion;
+	}
+	
+	public ObjectProperty<UpdateStatus> getUpdateStatusProperty(){
+		return updateStatus;
 	}
 
 }
