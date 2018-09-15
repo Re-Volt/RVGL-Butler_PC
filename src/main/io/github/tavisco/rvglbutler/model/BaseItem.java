@@ -38,6 +38,10 @@ public abstract class BaseItem {
     public void setItemFolderName(String itemPath) {
         this.itemFolderName = itemPath;
     }
+    
+    public void deleteItem() {
+    	System.out.println("Deleting " + this.getName());
+    }
 
     /*public String getFullPath() {
         return basePath + File.separator + type.getTypePath() + File.separator + itemFolderName;

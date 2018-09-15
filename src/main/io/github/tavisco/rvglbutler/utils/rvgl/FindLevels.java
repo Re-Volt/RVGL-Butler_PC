@@ -20,29 +20,27 @@ public class FindLevels {
 
 		Configs configs = Configs.getInstance();
 
-		String path = configs.getRvglPath() + File.separator + ItemType.LEVEL.getTypePath();
-		File directory = new File(path);
-		File[] files = directory.listFiles();
+		String levelPath = configs.getRvglPath() + File.separator + ItemType.LEVEL.getTypePath();
+		File levelFolder = new File(levelPath);
+		File[] allLevelsFolders = levelFolder.listFiles();
 
-		if (!directory.isDirectory() || !directory.canRead() || files.length == 0) {
+		if (!levelFolder.isDirectory() || !levelFolder.canRead() || allLevelsFolders.length == 0) {
 			return null;
 		}
 
 		boolean skip;
-		for (File levelFile : files) {
+		for (File singleLevelFolder : allLevelsFolders) {
 			skip = false;
 
 			for (String dontShow : dontShowTracks) {
-				if (dontShow.equals(levelFile.getName()))
+				if (dontShow.equals(singleLevelFolder.getName()))
 					skip = true;
 			}
 
 			if (skip)
 				continue;
-
-			LevelItem level = new LevelItem();
-			level.setItemFolderName(levelFile.getName());
-			level.setName(levelFile.getName());
+			
+			LevelItem level = new LevelItem(singleLevelFolder);
 			levels.add(level);
 		}
 

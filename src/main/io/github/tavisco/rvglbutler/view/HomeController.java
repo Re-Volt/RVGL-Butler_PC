@@ -12,9 +12,11 @@ public class HomeController {
 	@FXML
 	private Button btnLaunch;
 	@FXML
-	private AnchorPane paneLevels;
-	@FXML
 	private AnchorPane paneRvIo;
+	@FXML
+	private AnchorPane paneCars;
+	@FXML
+	private AnchorPane paneLevels;
 	
 	// Reference to the main application.
     private Main mainApp;
@@ -34,13 +36,17 @@ public class HomeController {
     @FXML
     private void initialize() {
     	try {
-        	FXMLLoader loaderLevels = new FXMLLoader();
-        	loaderLevels.setLocation(Main.class.getResource("view/tabs/LevelsTab.fxml"));
-            paneLevels.getChildren().setAll((AnchorPane) loaderLevels.load());
-            
             FXMLLoader loaderIO = new FXMLLoader();
             loaderIO.setLocation(Main.class.getResource("view/tabs/RvIoTab.fxml"));
             paneRvIo.getChildren().setAll((AnchorPane) loaderIO.load());
+            
+            FXMLLoader loaderCars = new FXMLLoader();
+            loaderCars.setLocation(Main.class.getResource("view/tabs/CarsTab.fxml"));
+            paneCars.getChildren().setAll((AnchorPane) loaderCars.load());
+            
+            FXMLLoader loaderLevels = new FXMLLoader();
+        	loaderLevels.setLocation(Main.class.getResource("view/tabs/LevelsTab.fxml"));
+            paneLevels.getChildren().setAll((AnchorPane) loaderLevels.load());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
