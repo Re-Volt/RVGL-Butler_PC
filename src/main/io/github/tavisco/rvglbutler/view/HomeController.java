@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import main.io.github.tavisco.rvglbutler.Main;
+import main.io.github.tavisco.rvglbutler.view.tabs.RvIoTabController;
 
 public class HomeController {
 	@FXML
@@ -39,6 +40,8 @@ public class HomeController {
             FXMLLoader loaderIO = new FXMLLoader();
             loaderIO.setLocation(Main.class.getResource("view/tabs/RvIoTab.fxml"));
             paneRvIo.getChildren().setAll((AnchorPane) loaderIO.load());
+            RvIoTabController ioController = loaderIO.getController();
+            ioController.setMainApp(mainApp);
             
             FXMLLoader loaderCars = new FXMLLoader();
             loaderCars.setLocation(Main.class.getResource("view/tabs/CarsTab.fxml"));

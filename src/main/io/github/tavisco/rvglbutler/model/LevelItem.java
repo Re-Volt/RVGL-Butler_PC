@@ -2,9 +2,11 @@ package main.io.github.tavisco.rvglbutler.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import de.olfillasodikno.openvolt.lib.structures.parameters.RVParameters;
-import de.olfillasodikno.openvolt.lib.utils.RVReader;
 import main.io.github.tavisco.rvglbutler.utils.Configs;
 
 /**
@@ -14,19 +16,37 @@ public class LevelItem extends BaseItem {
     
 	public LevelItem(File levelFolder) {
 		this.setItemFolderName(levelFolder.getName());
-		this.setName(levelFolder.getName());
+		//this.setName(levelFolder.getName());
 		
-		/*String configFilePath = "/home/tavisco/.rvgl/cars/cougar/parameters.txt"; //levelFolder.getAbsolutePath() + File.separator + getItemFolderName() + ".inf";
+		String configFilePath = levelFolder.getAbsolutePath() + File.separator + getItemFolderName() + ".inf";
 		
 		File configFile = new File(configFilePath);
-		
+
 		try {
-			RVParameters params = RVReader.paramFromFile(configFile);
+			List<String> lines = Files.readAllLines(configFile.toPath());
+			for (String line : lines) {
+				if (line.length() <= 4)
+					continue;
+
+				String name = line.substring(0, 4).toUpperCase();
+
+				if (name.equals("NAME")) {
+					//Now I use REGEX to extract the name of the item
+					Pattern p = Pattern.compile("\'(.*?)\'");
+					Matcher m = p.matcher(line);
+					if (m.find()) {
+						this.setName(m.group(0).replace("\'", ""));
+						break;
+					}
+				}
+			}
+//			} else {
+//				this.setName(param.getName());
+//			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	}
 	
 	@Override

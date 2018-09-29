@@ -18,6 +18,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import main.io.github.tavisco.rvglbutler.Main;
 import main.io.github.tavisco.rvglbutler.model.IOPackageItem;
 import main.io.github.tavisco.rvglbutler.utils.Constants;
 
@@ -35,6 +36,9 @@ public class RvIoTabController {
 	private TableColumn<IOPackageItem, String> localVersionColumn;
 
 	private ObservableList<IOPackageItem> ioPacks = FXCollections.observableArrayList();
+	
+	// Reference to the main application.
+    private Main mainApp;
 
 	public RvIoTabController() {
 		// TODO Auto-generated constructor stub
@@ -107,12 +111,15 @@ public class RvIoTabController {
 		
 	}
 
-	
+	/**
+     * Is called by the main application to give a reference back to itself.
+     * 
+     * @param mainApp
+     */
+    public void setMainApp(Main mainApp) {
+        this.mainApp = mainApp;
 
-	
+    }
 
-	
-
-	
 
 }

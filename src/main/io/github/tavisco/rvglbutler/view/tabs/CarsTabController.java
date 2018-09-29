@@ -19,9 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import main.io.github.tavisco.rvglbutler.model.CarItem;
-import main.io.github.tavisco.rvglbutler.model.LevelItem;
 import main.io.github.tavisco.rvglbutler.utils.rvgl.FindCars;
-import main.io.github.tavisco.rvglbutler.utils.rvgl.FindLevels;
 
 public class CarsTabController {
 	@FXML

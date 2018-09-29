@@ -2,7 +2,7 @@ package main.io.github.tavisco.rvglbutler.model.enums;
 
 public enum UpdateStatus {
     UPDATE_AVAIABLE("Update avaible!"),
-    UPDATED("Running the last version"),
+    UPDATED("Up to date"),
     NOT_INSTALLED("Not installed"),
     ERROR("Error"),
     UNKNOWN("Unknown");

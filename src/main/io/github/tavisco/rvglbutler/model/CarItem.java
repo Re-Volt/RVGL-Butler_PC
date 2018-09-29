@@ -2,13 +2,15 @@ package main.io.github.tavisco.rvglbutler.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.olfillasodikno.openvolt.lib.structures.parameters.RVCarParameters;
-import de.olfillasodikno.openvolt.lib.structures.parameters.RVParameters;
+//import de.olfillasodikno.openvolt.lib.structures.parameters.RVCarParameters;
+//import de.olfillasodikno.openvolt.lib.structures.parameters.RVParameters;
 import main.io.github.tavisco.rvglbutler.utils.Configs;
 
 /**
@@ -26,15 +28,15 @@ public class CarItem extends BaseItem {
 		File configFile = new File(configFilePath);
 		
 		try {
-			RVCarParameters param = new RVCarParameters(RVParameters.fromFile(configFile).getRoot());
-			param.decode();
-			
-			if (param.getName() == null) {
+//			RVCarParameters param = new RVCarParameters(RVParameters.fromFile(configFile).getRoot());
+//			param.decode();
+//
+//			if (param.getName() == null) {
 				List<String> lines = Files.readAllLines(configFile.toPath());
 				for (String line : lines) {
 					if (line.length() <= 4)
 						continue;
-					
+
 					String name = line.substring(0, 4).toUpperCase();
 
 					if (name.equals("NAME")) {
@@ -43,13 +45,13 @@ public class CarItem extends BaseItem {
 				        Matcher m = p.matcher(line);
 				        if (m.find()) {
 				            this.setName(m.group(0).replace("\"", ""));
-				            continue;
+				            break;
 				        }
 					}
 				}
-			} else {
-				this.setName(param.getName());
-			}
+//			} else {
+//				this.setName(param.getName());
+//			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,7 +70,9 @@ public class CarItem extends BaseItem {
         if (image.exists()){
             return image.getPath();
         } else {
-            return carboxNotFoundPath;
+        	String path = File.separator + "resources" + File.separator + "carboxes" + File.separator + "mistery.png";
+        	System.out.println(">>>>>>>>>>>>>> " + path);
+            return getClass().getResource(path).getPath();
         }
     }
 }
