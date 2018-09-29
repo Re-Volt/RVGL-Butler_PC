@@ -70,9 +70,10 @@ public class CarItem extends BaseItem {
         if (image.exists()){
             return image.getPath();
         } else {
-        	String path = File.separator + "resources" + File.separator + "carboxes" + File.separator + "mistery.png";
-        	System.out.println(">>>>>>>>>>>>>> " + path);
-            return getClass().getResource(path).getPath();
+        	//String path = File.separator + "resources" + File.separator + "carboxes" + File.separator + "mistery.png";
+        	//System.out.println(">>>>>>>>>>>>>> " + path);
+            //return getClass().getResource(path).getPath();
+			return null;
         }
     }
 }
